@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "367531942912",
+    "project_id": "rotinae-8ff8a",
+    "storage_bucket": "rotinae-8ff8a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:367531942912:android:a302970bc9635005dde4e5",
+        "android_client_info": {
+          "package_name": "br.com.rotinae.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnx7p55OW7ZdSb75ZN1lYzgQbMhy5k1qk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,28 @@
+appId: br.com.agendae.app
+---
+- launchApp:
+    clearState: true
+- assertVisible: "Acesse sua conta"
+- tapOn: "Criar uma conta"
+- tapOn: "Prestador de serviços"
+- assertVisible: "Crie sua conta."
+- tapOn: "Seu nome completo"
+- inputText: "Maria Souza"
+- tapOn: "voce@exemplo.com"
+- inputText: "maria@example.com"
+- tapOn: "(11) 99999-9999"
+- inputText: "11999999999"
+- tapOn: "Mínimo de 8 caracteres"
+- inputText: "senha-segura"
+- tapOn: "Digite a senha novamente"
+- inputText: "senha-segura"
+- tapOn: "Termos de Uso"
+- assertVisible: "DOCUMENTO LEGAL"
+- assertVisible: "Termos de Uso"
+- tapOn: "Entendi"
+- tapOn: "Política de Privacidade"
+- assertVisible: "Política de Privacidade"
+- tapOn: "Entendi"
+- tapOn: "Alterar consentimento"
+- tapOn: "Criar conta"
+- assertVisible: "Confirme seu e-mail"

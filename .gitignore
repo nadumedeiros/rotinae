@@ -1,0 +1,36 @@
+# Dependencies and generated Expo files
+node_modules/
+apps/agendae/node_modules/
+apps/agendae/.expo/
+apps/agendae/supabase/.temp/
+apps/agendae/dist/
+apps/agendae/dist-android/
+apps/agendae/dist-ios/
+apps/agendae/web-build/
+
+# Environment files (keep examples)
+.env
+.env.local
+.env.*.local
+apps/agendae/.env
+apps/agendae/.env.local
+apps/agendae/.env.*.local
+
+# Native and editor artifacts
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+apps/agendae/firebase-service-account*.json
+apps/agendae/google-service-account*.json
+*.orig.*
+.DS_Store
+Thumbs.db
+
+# Claude Code session data (not part of the project)
+.claude/
+
+# Debug logs
+*.err.log
+*.out.log

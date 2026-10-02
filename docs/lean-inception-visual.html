@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lean Inception Visual — Rotinaê</title>
+  <meta name="description" content="Lean Inception visual do Rotinaê, baseada no Documento de Visão v0.2.0.">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap');
+    :root {
+      --ink: #191725;
+      --muted: #555264;
+      --paper: #f7f5ff;
+      --card: #ffffff;
+      --brand: #5416ff;
+      --brand-dark: #21065f;
+      --brand-soft: #eee9ff;
+      --accent: #a991ff;
+      --line: #e8e5ef;
+      --shadow: 0 14px 42px rgba(33, 6, 95, .10);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(169, 145, 255, .28), transparent 25rem),
+        radial-gradient(circle at 90% 10%, rgba(84, 22, 255, .15), transparent 28rem),
+        var(--paper);
+      font: 16px/1.6 Urbanist, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a { color: inherit; }
+    .layout { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 28px 22px;
+      color: #eef7f2;
+      background: var(--brand-dark);
+      overflow: auto;
+    }
+    .logo { font-size: 1.55rem; font-weight: 850; letter-spacing: -.04em; }
+    .logo span { color: var(--accent); }
+    .version { margin: 6px 0 28px; color: #ddd4ff; font-size: .82rem; }
+    nav { display: grid; gap: 4px; }
+    nav a { padding: 8px 10px; border-radius: 8px; text-decoration: none; color: #eee9ff; font-size: .9rem; }
+    nav a:hover { background: rgba(255,255,255,.1); color: white; }
+    main { width: min(1180px, 100%); padding: 48px clamp(22px, 5vw, 76px) 90px; }
+    .hero { padding: clamp(28px, 5vw, 58px); border-radius: 28px; background: var(--brand); color: white; box-shadow: var(--shadow); }
+    .eyebrow { color: #ddd4ff; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; font-size: .74rem; }
+    h1 { max-width: 850px; margin: 12px 0; font-size: clamp(2.4rem, 6vw, 5.5rem); line-height: .95; letter-spacing: -.065em; }
+    .hero p { max-width: 760px; color: #eee9ff; font-size: 1.08rem; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+    .chip { padding: 7px 11px; border: 1px solid rgba(255,255,255,.25); border-radius: 999px; font-size: .82rem; }
+    section { padding-top: 74px; scroll-margin-top: 20px; }
+    h2 { margin: 0 0 22px; font-size: clamp(1.65rem, 3vw, 2.6rem); letter-spacing: -.04em; }
+    h3 { margin: 0 0 10px; font-size: 1.08rem; }
+    .lead { max-width: 830px; color: var(--muted); }
+    .vision { padding: 30px; border-left: 7px solid var(--accent); border-radius: 0 18px 18px 0; background: var(--card); box-shadow: var(--shadow); font-size: clamp(1.08rem, 2vw, 1.35rem); }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .grid.two { grid-template-columns: repeat(2, 1fr); }
+    .card { padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: rgba(255,253,247,.9); box-shadow: 0 8px 24px rgba(23,32,29,.045); }
+    .card p, .card li { color: var(--muted); }
+    .card ul { margin: 8px 0 0; padding-left: 20px; }
+    .number { display: grid; place-items: center; width: 34px; height: 34px; margin-bottom: 15px; border-radius: 10px; background: var(--brand-soft); color: var(--brand); font-weight: 850; }
+    .diagram { margin-top: 18px; padding: 26px; overflow-x: auto; border: 1px solid var(--line); border-radius: 18px; background: white; box-shadow: var(--shadow); }
+    .tag { display: inline-block; margin-bottom: 10px; padding: 4px 9px; border-radius: 999px; background: var(--brand-soft); color: var(--brand); font-size: .73rem; font-weight: 800; text-transform: uppercase; }
+    .tag.orange { background: #fff0cf; color: #8a4d00; }
+    table { width: 100%; border-collapse: collapse; border: 1px solid var(--line); background: var(--card); box-shadow: var(--shadow); }
+    th, td { padding: 15px; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; }
+    th { color: var(--brand); background: var(--brand-soft); }
+    tr:last-child td { border-bottom: 0; }
+    .note { margin-top: 18px; padding: 16px 18px; border-radius: 12px; background: #eee9ff; color: #2f0b82; }
+    footer { margin-top: 70px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
+
+    @media (max-width: 900px) {
+      .layout { display: block; }
+      aside { position: relative; height: auto; }
+      nav { grid-template-columns: repeat(2, 1fr); }
+      main { padding-top: 24px; }
+      .grid, .grid.two { grid-template-columns: 1fr; }
+    }
+    @media print {
+      aside { display: none; }
+      .layout { display: block; }
+      main { width: 100%; padding: 0; }
+      section { break-inside: avoid; padding-top: 36px; }
+      .card, table, .diagram, .hero { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <div class="logo">agenda<span>ê</span></div>
+      <div class="version">Lean Inception v0.3.0 · Visão v0.4.0</div>
+      <nav>
+        <a href="#visao">Visão</a><a href="#problema">Problema</a>
+        <a href="#objetivos">Objetivos</a><a href="#personas">Personas</a>
+        <a href="#jornadas">Jornadas</a><a href="#mapa">Funcionalidades</a>
+        <a href="#limites">Limites</a><a href="#sequencia">Sequenciador</a>
+        <a href="#priorizacao">Priorização</a><a href="#arquitetura">Arquitetura</a>
+        <a href="#metricas">Métricas</a><a href="#planos">Planos</a>
+        <a href="#decisoes">Decisões</a>
+      </nav>
+    </aside>
+
+    <main>
+      <header class="hero">
+        <div class="eyebrow">Alinhamento de produto</div>
+        <h1>Lean Inception Visual</h1>
+        <p>Uma visão compartilhada do problema, das pessoas, do MVP e do caminho de validação do Rotinaê.</p>
+        <div class="chips"><span class="chip">Agenda inteligente</span><span class="chip">Pacotes</span><span class="chip">Evolução</span><span class="chip">Financeiro</span><span class="chip">WhatsApp</span><span class="chip">Multiplataforma</span></div>
+      </header>
+
+      <section id="visao"><h2>Visão do produto</h2><div class="vision">Para <strong>prestadores de serviços</strong>, inicialmente adestradores, que precisam organizar atendimentos, clientes e sua operação, o <strong>Rotinaê</strong> é uma plataforma multiplataforma que centraliza <strong>agenda, pacotes, evolução dos atendimentos, finanças e comunicação</strong> em uma operação integrada e rastreável.</div></section>
+
+      <section id="problema"><h2>O problema</h2><p class="lead">Agenda, planilhas, mensagens, anotações e arquivos dispersos criam uma operação fragmentada.</p><div class="diagram"><pre class="mermaid">flowchart LR
+ A[Agenda pessoal] --> F[Operação fragmentada]
+ B[Planilhas] --> F
+ C[WhatsApp] --> F
+ D[Anotações] --> F
+ E[Arquivos] --> F
+ F --> G[Conflitos]
+ F --> H[Retrabalho]
+ F --> I[Histórico incompleto]
+ F --> J[Baixa visão financeira]
+ G &amp; H &amp; I &amp; J --> K[Rotinaê]
+ K --> L[Operação centralizada]</pre></div></section>
+
+      <section id="objetivos"><h2>Objetivos</h2><div class="grid">
+        <article class="card"><div class="number">1</div><h3>Organizar</h3><p>Reduzir conflitos, esquecimentos e trabalho manual.</p></article>
+        <article class="card"><div class="number">2</div><h3>Centralizar</h3><p>Reunir clientes, documentos, serviços e histórico.</p></article>
+        <article class="card"><div class="number">3</div><h3>Acompanhar</h3><p>Documentar a evolução e o progresso dos serviços.</p></article>
+        <article class="card"><div class="number">4</div><h3>Controlar</h3><p>Gerenciar pacotes, saldos, finanças e comissões.</p></article>
+        <article class="card"><div class="number">5</div><h3>Comunicar</h3><p>Automatizar confirmações e lembretes.</p></article>
+        <article class="card"><div class="number">6</div><h3>Escalar</h3><p>Oferecer acesso consistente em diferentes dispositivos.</p></article>
+      </div></section>
+
+      <section id="personas"><h2>Personas iniciais</h2><div class="grid">
+        <article class="card"><span class="tag">Principal</span><h3>Prestador autônomo</h3><p>Escolhe o perfil Prestador, recebe um código e controla a operação em um só lugar.</p></article>
+        <article class="card"><span class="tag">Negócio</span><h3>Prestador</h3><p>Busca padronização, controle de recebimentos e indicadores básicos.</p></article>
+        <article class="card"><span class="tag">Cliente</span><h3>Cliente final</h3><p>Escolhe o perfil Cliente e informa o código do prestador para realizar o vínculo.</p></article>
+      </div><div class="note"><strong>Definição do MVP:</strong> existirão somente os perfis Prestador e Cliente. Equipes ficam fora do lançamento inicial.</div></section>
+
+      <section id="jornadas"><h2>Jornadas principais</h2><div class="diagram"><pre class="mermaid">flowchart LR
+ A[Criar conta] --> B[Configurar perfil]
+ B --> C[Cadastrar serviço]
+ C --> D[Cadastrar cliente]
+ D --> E[Definir disponibilidade]
+ E --> F[Agendar]
+ F --> G[Atender]
+ G --> H[Registrar evolução]
+ H --> I[Consumir pacote]
+ I --> J[Registrar financeiro]
+ J --> K[Acompanhar indicadores]</pre></div>
+      <div class="diagram"><pre class="mermaid">flowchart LR
+ A[Cliente recebe acesso] --> B[Consulta disponibilidade]
+ B --> C[Solicita agendamento]
+ C --> D[Recebe confirmação]
+ D --> E[Recebe lembrete]
+ E --> F[Realiza atendimento]
+ F --> G[Consulta informações permitidas]</pre></div></section>
+
+      <section id="mapa"><h2>Mapa de funcionalidades</h2><div class="grid">
+        <article class="card"><span class="tag">Agenda</span><ul><li>Disponibilidade</li><li>Recorrência</li><li>Conflitos</li><li>Cancelamentos</li></ul></article>
+        <article class="card"><span class="tag">Pacotes</span><ul><li>Saldo</li><li>Validade</li><li>Consumo</li><li>Histórico</li></ul></article>
+        <article class="card"><span class="tag">Clientes</span><ul><li>Cadastro</li><li>Animais</li><li>Documentos</li><li>Relacionamento</li></ul></article>
+        <article class="card"><span class="tag">Evolução</span><ul><li>Atividades</li><li>Observações</li><li>Anexos</li><li>Progresso</li></ul></article>
+        <article class="card"><span class="tag">Financeiro</span><ul><li>Recebimentos</li><li>Despesas</li><li>Comissões</li><li>Indicadores</li></ul></article>
+        <article class="card"><span class="tag">Comunicação</span><ul><li>Confirmações</li><li>Lembretes</li><li>WhatsApp</li><li>Push</li></ul></article>
+      </div></section>
+
+      <section id="limites"><h2>É / Não é / Faz / Não faz</h2><div class="grid two">
+        <article class="card"><span class="tag">É</span><ul><li>SaaS de gestão de atendimentos</li><li>Multiplataforma</li><li>Modular e inicialmente voltado a adestradores</li></ul></article>
+        <article class="card"><span class="tag orange">Não é</span><ul><li>Marketplace público</li><li>Sistema contábil completo</li><li>Produto rígido para um único segmento</li></ul></article>
+        <article class="card"><span class="tag">Faz</span><ul><li>Agenda e pacotes</li><li>Clientes e evolução</li><li>Financeiro operacional</li><li>Lembretes e WhatsApp</li></ul></article>
+        <article class="card"><span class="tag orange">Não faz agora</span><ul><li>Roteirização avançada</li><li>Videochamada</li><li>Contabilidade completa</li><li>Marketing avançado</li></ul></article>
+      </div></section>
+
+      <section id="sequencia"><h2>Sequenciador do MVP</h2><div class="diagram"><pre class="mermaid">flowchart LR
+ A[Onda 1<br/>Fundamentos] --> B[Onda 2<br/>Operação]
+ B --> C[Onda 3<br/>Controle]
+ C --> D[Onda 4<br/>Comunicação e validação]
+ A1[Auth · Perfis · Clientes<br/>Serviços · Agenda] -.-> A
+ B1[Recorrência · Pacotes<br/>Evolução · Anexos] -.-> B
+ C1[Recebimentos · Despesas<br/>Comissões · Indicadores] -.-> C
+ D1[Lembretes · WhatsApp<br/>Cliente · Métricas] -.-> D</pre></div><div class="note">Cada onda deve produzir uma versão utilizável e validável. Isto não representa um cronograma fechado.</div></section>
+
+      <section id="priorizacao"><h2>Priorização MoSCoW</h2><table><thead><tr><th>Prioridade</th><th>Capacidades</th></tr></thead><tbody>
+        <tr><td><strong>Must</strong></td><td>Autenticação, perfis, clientes, animais, serviços, agenda, disponibilidade, recorrência, pacotes, evolução e controle de acesso.</td></tr>
+        <tr><td><strong>Should</strong></td><td>Documentos, anexos, recebimentos, despesas, comissões, indicadores e lembretes.</td></tr>
+        <tr><td><strong>Could</strong></td><td>Experiência dedicada do cliente, canais adicionais, filtros e relatórios extras.</td></tr>
+        <tr><td><strong>Won't now</strong></td><td>Marketplace, contabilidade completa, roteirização avançada, videochamadas e marketing avançado.</td></tr>
+      </tbody></table></section>
+
+      <section id="arquitetura"><h2>Arquitetura inicial</h2><div class="diagram"><pre class="mermaid">flowchart TB
+ U[Prestador e cliente] --> APP[Smartphone e tablet]
+ U --> WEB[Computador]
+ APP &amp; WEB --> AUTH[Supabase Auth]
+ APP &amp; WEB --> API[Supabase / Back-end]
+ API --> DB[(PostgreSQL)]
+ API --> STORAGE[Supabase Storage]
+ API --> N[Notificações]
+ N --> FCM[Firebase Cloud Messaging]
+ N --> WA[WhatsApp]
+ APP &amp; WEB --> S[Sentry]</pre></div><div class="note"><strong>Pendente:</strong> validar a estratégia web e o compartilhamento de código com React Native/Expo.</div></section>
+
+      <section id="metricas"><h2>Indicadores de sucesso</h2><div class="grid">
+        <article class="card"><h3>Aquisição</h3><p>Convites, cadastros e origem dos prestadores.</p></article>
+        <article class="card"><h3>Ativação</h3><p>Perfil configurado, primeiro cliente e primeiro agendamento.</p></article>
+        <article class="card"><h3>Uso e retenção</h3><p>Atendimentos, evolução, pacotes e frequência de uso.</p></article>
+        <article class="card"><h3>Qualidade</h3><p>Erros críticos, conflitos reportados e satisfação.</p></article>
+        <article class="card"><h3>Negócio</h3><p>Custo por prestador e intenção de pagamento.</p></article>
+      </div></section>
+
+      <section id="planos"><h2>Estratégia de planos</h2><div class="grid">
+        <article class="card"><span class="tag">Teste</span><h3>Premium por 30 dias</h3><p>Todo novo prestador experimenta o plano completo sem custo.</p></article>
+        <article class="card"><span class="tag">Gratuito</span><h3>Até 3 por semana</h3><p>Até três agendamentos semanais e acesso às funcionalidades básicas.</p></article>
+        <article class="card"><span class="tag orange">Premium</span><h3>R$ 29,00/mês</h3><p>Agendamentos ilimitados e todas as funcionalidades da versão contratada.</p></article>
+      </div><div class="note">O Rotinaê não processará pagamentos dos serviços entre cliente e prestador. A assinatura SaaS é um fluxo separado.</div></section>
+
+      <section id="decisoes"><h2>Decisões pendentes</h2><table><thead><tr><th>Tema</th><th>Pergunta</th></tr></thead><tbody>
+        <tr><td>Agenda</td><td>Como tratar feriados, intervalos, fuso horário e conflitos simultâneos?</td></tr>
+        <tr><td>Vínculo</td><td>O código cria vínculo imediato ou exige aprovação? Pode haver vários prestadores?</td></tr>
+        <tr><td>Recorrência</td><td>Quais frequências, limites e tratamentos de indisponibilidade serão permitidos?</td></tr>
+        <tr><td>Pacotes</td><td>O que ocorre com saldo e atendimentos futuros após vencimento ou cancelamento?</td></tr>
+        <tr><td>Financeiro</td><td>Quais regras de competência, comissões e pagamento serão usadas?</td></tr>
+        <tr><td>Cliente</td><td>Usará aplicativo ou web e quais dados poderá consultar?</td></tr>
+        <tr><td>WhatsApp</td><td>Qual provedor, consentimento e modelos serão adotados?</td></tr>
+        <tr><td>Planos</td><td>Quais recursos serão básicos e como contar o limite de 3 agendamentos por semana?</td></tr>
+      </tbody></table></section>
+
+      <footer>Rotinaê · Lean Inception Visual v0.3.0 · Visão v0.4.0 · RN v0.2.0 · RF/RNF/HU v0.1.0 · 02/08/2026</footer>
+    </main>
+  </div>
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({ startOnLoad: true, theme: "base", themeVariables: { primaryColor: "#eee9ff", primaryTextColor: "#191725", primaryBorderColor: "#5416ff", lineColor: "#7135e5", secondaryColor: "#ddd4ff", tertiaryColor: "#ffffff", fontFamily: "Urbanist, system-ui, sans-serif" }, flowchart: { curve: "basis", htmlLabels: true } });
+  </script>
+</body>
+</html>

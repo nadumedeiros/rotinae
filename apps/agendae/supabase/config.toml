@@ -1,0 +1,37 @@
+project_id = "rotinae"
+
+[auth]
+enabled = true
+site_url = "https://rotinae.com.br"
+additional_redirect_urls = [
+  "https://rotinae.com.br/confirm-email",
+  "https://rotinae.com.br/change-password",
+  "https://rotinae.com.br/auth/callback",
+  "https://rotinae.netlify.app/auth/callback",
+  "http://localhost:8081/auth/callback",
+  "rotinae:///confirm-email",
+  "rotinae:///change-password",
+  "rotinae:///auth/callback",
+]
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
+[auth.email]
+enable_confirmations = true
+max_frequency = "60s"
+otp_length = 8
+
+# O plano gratuito com provedor padrão bloqueia templates personalizados via
+# Management API. Os HTMLs validados continuam em /emails/supabase e podem
+# ser ativados quando houver SMTP próprio ou upgrade do projeto.
+
+[storage.vector]
+enabled = false
+
+[functions.send-push-notifications]
+verify_jwt = false
+
+[functions.finalize-subscription-cancellations]
+verify_jwt = false

@@ -1,0 +1,24 @@
+{
+  "name": "Rotinaê",
+  "short_name": "Rotinaê",
+  "description": "Sua rotina de atendimentos, mais leve.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#5416FF",
+  "theme_color": "#5416FF",
+  "icons": [
+    {
+      "src": "/app-icon-512.png",
+      "sizes": "1254x1254",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app-icon-512.png",
+      "sizes": "1254x1254",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

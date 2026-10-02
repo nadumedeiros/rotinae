@@ -1,0 +1,82 @@
+{
+  "expo": {
+    "name": "Rotinaê",
+    "slug": "rotinae",
+    "version": "1.0.5",
+    "icon": "./assets/images/app-icon-e.png",
+    "scheme": "rotinae",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "br.com.rotinae.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#5416FF",
+        "foregroundImage": "./assets/images/app-icon-foreground.png",
+        "monochromeImage": "./assets/images/app-icon-foreground.png"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "br.com.rotinae.app",
+      "googleServicesFile": "./google-services.json",
+      "versionCode": 9
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/app-icon-e.png"
+    },
+    "plugins": [
+      [
+        "expo-router",
+        {
+          "asyncRoutes": {
+            "web": true
+          }
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#5416FF",
+          "dark": {
+            "backgroundColor": "#21065F"
+          }
+        }
+      ],
+      "expo-secure-store",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/app-icon-foreground.png",
+          "color": "#5416FF",
+          "defaultChannel": "rotinae-events"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableMinifyInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "e5e8a4c6-739d-47da-a608-9f3fa68add14"
+      }
+    },
+    "owner": "mesquitars-team"
+  }
+}

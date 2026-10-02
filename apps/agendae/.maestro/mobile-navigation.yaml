@@ -1,0 +1,19 @@
+appId: br.com.agendae.app
+---
+- launchApp
+- tapOn: "E-mail"
+- inputText: "provider@example.com"
+- tapOn: "Senha"
+- inputText: "senha123"
+- tapOn: "Entrar"
+- assertVisible: "Olá, Marcus!"
+- tapOn: "Clientes"
+- assertVisible: "Seus clientes"
+- tapOn: "Agenda"
+- assertVisible: "Sua agenda"
+- tapOn: "Financeiro"
+- assertVisible: "Pagamentos"
+- tapOn: "Início"
+- assertVisible: "Agenda de hoje"
+- tapOn: "Novo"
+- assertVisible: "O que deseja criar?"

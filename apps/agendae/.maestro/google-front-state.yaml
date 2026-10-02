@@ -1,0 +1,9 @@
+appId: br.com.agendae.app
+---
+- launchApp:
+    clearState: true
+- tapOn: "Continuar com Google"
+- assertVisible: "Google em preparação"
+- assertVisible: "A interface está pronta."
+- tapOn: "Voltar ao login"
+- assertVisible: "Acesse sua conta"
