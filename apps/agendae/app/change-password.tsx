@@ -7,7 +7,7 @@ import { AuthLayout } from '@/src/components/auth-layout';
 import { Button } from '@/src/components/ui/button';
 import { TextField } from '@/src/components/ui/text-field';
 import { AuthError } from '@/src/domain/auth/types';
-import { supabaseAuthService as authService } from '@/src/infra/auth/supabase-auth-adapter';
+import { sairDaConta } from '@/src/infra/auth/sair-da-conta';
 import { authRegistrationService } from '@/src/infra/auth/supabase-auth-registration-adapter';
 import { completeAuthSessionFromUrl } from '@/src/infra/auth/auth-url-session';
 import { colors, radius, spacing, typography } from '@/src/theme/tokens';
@@ -55,7 +55,7 @@ export default function ChangePasswordScreen() {
     setSaving(true);
     try {
       await authRegistrationService.updatePassword({ newPassword: password });
-      await authService.signOut();
+      await sairDaConta();
       router.replace({ pathname: '/feedback', params: { state: 'password-updated' } });
     } catch (caught) {
       if (caught instanceof AuthError && caught.code === 'SESSION_EXPIRED') {
