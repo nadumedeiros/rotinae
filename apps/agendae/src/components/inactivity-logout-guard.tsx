@@ -9,6 +9,7 @@ import {
   INACTIVITY_LOGOUT_TIMEOUT_MS,
 } from '@/src/domain/auth/inactivity-constants';
 import { useIdleTimer } from '@/src/hooks/use-idle-timer';
+import { sairDaConta } from '@/src/infra/auth/sair-da-conta';
 import { supabase } from '@/src/infra/supabase/client';
 import { colors, elevation, radius, spacing, typography } from '@/src/theme/tokens';
 
@@ -63,7 +64,7 @@ export function InactivityLogoutGuard({ children }: PropsWithChildren) {
   const handleIdle = useCallback(() => {
     // Logout real (invalida o refresh token no servidor via GoTrue, escopo
     // `global` — comportamento padrão do SDK), não um mero "lock" de tela.
-    void supabase.auth.signOut().finally(() => {
+    void sairDaConta().finally(() => {
       // O modal só tem efeito visível se o app estiver em primeiro plano
       // (`app em foreground`, requisito do produto). Se o timeout foi
       // detectado com o app em segundo plano (ver `checkNow`/AppState
