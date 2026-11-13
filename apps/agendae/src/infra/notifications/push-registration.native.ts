@@ -1,12 +1,12 @@
 import Constants from "expo-constants";
 import * as Crypto from "expo-crypto";
 import * as Notifications from "expo-notifications";
-import * as SecureStore from "expo-secure-store";
 import { Platform } from "react-native";
 
 import {
   parsePushNotificationData,
 } from "@/src/domain/notifications/push-notification-data";
+import { lerSeguro, salvarSeguro } from "@/src/infra/storage/secure-storage";
 import { supabase } from "@/src/infra/supabase/client";
 import type {
   PushRegistrationResult,
@@ -26,10 +26,10 @@ Notifications.setNotificationHandler({
 });
 
 async function getInstallationId(): Promise<string> {
-  const stored = await SecureStore.getItemAsync(INSTALLATION_ID_KEY);
+  const stored = await lerSeguro(INSTALLATION_ID_KEY);
   if (stored) return stored;
   const created = Crypto.randomUUID();
-  await SecureStore.setItemAsync(INSTALLATION_ID_KEY, created);
+  await salvarSeguro(INSTALLATION_ID_KEY, created);
   return created;
 }
 
@@ -50,7 +50,7 @@ async function readPushPreference(userId: string): Promise<boolean> {
 
 async function unregisterCurrentDevice(): Promise<void> {
   const userId = await getCurrentUserId();
-  const installationId = await SecureStore.getItemAsync(INSTALLATION_ID_KEY);
+  const installationId = await lerSeguro(INSTALLATION_ID_KEY);
   let unregisterError: unknown = null;
 
   if (userId && installationId) {
