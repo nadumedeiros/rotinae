@@ -12,8 +12,22 @@ export type AtendimentoSalvo = {
 
 export async function salvarAtendimentos(_atendimentos: AtendimentoSalvo[]): Promise<void> {}
 
+export async function substituirAtendimentosDoMes(
+  _mes: string,
+  _atendimentos: AtendimentoSalvo[],
+  _salvaEm: string,
+): Promise<void> {}
+
 export async function listarAtendimentosDoDia(_data: string): Promise<AtendimentoSalvo[]> {
   return [];
+}
+
+export async function listarAtendimentosDoMes(_mes: string): Promise<AtendimentoSalvo[]> {
+  return [];
+}
+
+export async function lerSincronizacao(_mes: string): Promise<string | null> {
+  return null;
 }
 
 export async function apagarAtendimentos(): Promise<void> {}
