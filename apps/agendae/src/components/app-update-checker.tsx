@@ -1,10 +1,10 @@
 import Constants from "expo-constants";
 import * as Linking from "expo-linking";
-import * as SecureStore from "expo-secure-store";
 import { useEffect } from "react";
 import { Alert, Platform } from "react-native";
 
 import { compareVersions } from "@/src/domain/app-update/version";
+import { ler, salvar } from "@/src/infra/storage/async-storage";
 
 type UpdateManifest = {
   version: string;
@@ -38,11 +38,11 @@ export function AppUpdateChecker() {
         if (compareVersions(manifest.version, installedVersion) <= 0) return;
 
         const required = typeof manifest.minimumVersion === "string" && compareVersions(installedVersion, manifest.minimumVersion) < 0;
-        const dismissedVersion = await SecureStore.getItemAsync(dismissedVersionKey);
+        const dismissedVersion = await ler(dismissedVersionKey);
         if (!required && dismissedVersion === manifest.version) return;
 
         const update = () => void Linking.openURL(manifest.apkUrl);
-        const later = () => void SecureStore.setItemAsync(dismissedVersionKey, manifest.version);
+        const later = () => void salvar(dismissedVersionKey, manifest.version);
         Alert.alert(
           required ? "Atualização necessária" : "Atualização disponível",
           manifest.message ?? `A versão ${manifest.version} do Rotinaê está disponível.`,
