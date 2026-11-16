@@ -38,6 +38,7 @@ import type { AppointmentRecord, AvailabilityBlock } from "@/src/domain/agenda/t
 import type { Client as DomainClient } from "@/src/domain/clients/types";
 import type { Service as DomainService } from "@/src/domain/services/types";
 import { appointmentService } from "@/src/infra/agenda/supabase-appointment-adapter";
+import { scheduleAppointmentReminders } from "@/src/infra/notifications/local-reminders";
 import { clientPortfolioService } from "@/src/infra/clients/supabase-client-portfolio-adapter";
 import { providerSettingsService } from "@/src/infra/provider/supabase-provider-settings-adapter";
 import { serviceCatalogService } from "@/src/infra/services/supabase-service-catalog-adapter";
@@ -425,7 +426,13 @@ export default function AgendaScreen() {
       );
       const pages = [firstPage, ...remainingPages];
       const names = new Map(clientOptions.map((item) => [item.id, item.name]));
-      setAppointments(pages.flatMap((pageResult) => pageResult.items).map((item) => toUiAppointment(item, names)));
+      const records = pages.flatMap((pageResult) => pageResult.items);
+
+setAppointments(records.map((item) => toUiAppointment(item, names)));
+
+void scheduleAppointmentReminders(records).catch((notificationError) => {
+  console.warn("Não foi possível agendar os lembretes locais:", notificationError);
+});
       setBlockedPeriods(blocks.map((block: AvailabilityBlock) => {
         const start = zonedParts(block.startsAt, block.timezone);
         const end = zonedParts(block.endsAt, block.timezone);
