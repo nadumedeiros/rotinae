@@ -12,7 +12,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { sairDaConta } from "@/src/infra/auth/sair-da-conta";
 import { supabaseAuthService as authService } from "@/src/infra/auth/supabase-auth-adapter";
 import type { UserRole } from "@/src/domain/auth/types";
 import type { NotificationDestination, NotificationRecord } from "@/src/domain/notifications/types";
@@ -247,8 +247,7 @@ export function AuthenticatedHeader() {
 
   async function leave() {
     setNativeMenuOpen(false);
-    await pushRegistrationService.unregisterCurrentDevice().catch(() => undefined);
-    await authService.signOut();
+    await sairDaConta();
     headerCache = null;
     router.replace("/");
   }
