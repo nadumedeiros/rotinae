@@ -2,6 +2,8 @@ import * as Notifications from "expo-notifications";
 
 import { cancelAllReminders } from "@/src/infra/notifications/local-reminders";
 
+import { apagarAtendimentos } from "./sqlite";
+
 // Limpa o que o app deixou guardado no celular quando a pessoa sai da conta.
 // O token de login o próprio Supabase apaga do SecureStore no signOut.
 export async function limparDadosLocais(): Promise<void> {
@@ -11,4 +13,7 @@ export async function limparDadosLocais(): Promise<void> {
 
   // lembretes locais agendados para os atendimentos da conta anterior.
   await cancelAllReminders().catch(() => undefined);
+
+  // apaga a agenda salva para usar sem internet (issue #10).
+  await apagarAtendimentos().catch(() => undefined);
 }
