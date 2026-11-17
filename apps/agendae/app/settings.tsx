@@ -25,6 +25,17 @@ import { ProviderError } from "@/src/domain/provider/types";
 import { supabaseAuthService as authService } from "@/src/infra/auth/supabase-auth-adapter";
 import { providerSettingsService } from "@/src/infra/provider/supabase-provider-settings-adapter";
 import { pushRegistrationService } from "@/src/infra/notifications/push-registration";
+import {
+  type AntecedenciaLembrete,
+  antecedenciaLembretePadrao,
+  lerAntecedenciaLembrete,
+  lerVisualizacaoAgenda,
+  opcoesAntecedenciaLembrete,
+  salvarAntecedenciaLembrete,
+  salvarVisualizacaoAgenda,
+  type VisualizacaoAgenda,
+  visualizacaoAgendaPadrao,
+} from "@/src/infra/storage/preferences";
 import { supabase } from "@/src/infra/supabase/client";
 import {
   breakpoints,
@@ -74,6 +85,17 @@ const PROFESSION_SUGGESTIONS = [
 // mesma convenção visual já usada no calendário de `app/client-booking.tsx`
 // (DEC-153). O `value` de cada item continua sendo o índice numérico da
 // convenção `Date.getDay()` — não alterar.
+// Preferências do app (card #7): textos mostrados em cada opção.
+const ROTULOS_ANTECEDENCIA: Record<AntecedenciaLembrete, string> = {
+  15: "15 min",
+  30: "30 min",
+  60: "1 h",
+  1440: "1 dia",
+};
+const OPCOES_VISUALIZACAO: { value: VisualizacaoAgenda; label: string }[] = [
+  { value: "list", label: "Lista" },
+  { value: "calendar", label: "Calendário" },
+];
 const WEEKDAYS: { value: number; short: string; full: string }[] = [
   { value: 0, short: "DOM", full: "Domingo" },
   { value: 1, short: "SEG", full: "Segunda-feira" },
@@ -117,6 +139,36 @@ export default function SettingsScreen() {
   const [saving, setSaving] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const savingRef = useRef(false);
+  // Preferências do app: ficam só neste aparelho (AsyncStorage) e são
+  // salvas na hora do toque, sem depender do botão "Salvar configurações".
+  const [antecedenciaLembrete, setAntecedenciaLembrete] =
+    useState<AntecedenciaLembrete>(antecedenciaLembretePadrao);
+  const [visualizacaoAgenda, setVisualizacaoAgenda] =
+    useState<VisualizacaoAgenda>(visualizacaoAgendaPadrao);
+
+  useEffect(() => {
+    let active = true;
+    void Promise.all([lerAntecedenciaLembrete(), lerVisualizacaoAgenda()]).then(
+      ([antecedencia, visualizacao]) => {
+        if (!active) return;
+        setAntecedenciaLembrete(antecedencia);
+        setVisualizacaoAgenda(visualizacao);
+      },
+    );
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  function escolherAntecedencia(minutos: AntecedenciaLembrete) {
+    setAntecedenciaLembrete(minutos);
+    void salvarAntecedenciaLembrete(minutos).catch(() => undefined);
+  }
+
+  function escolherVisualizacao(visualizacao: VisualizacaoAgenda) {
+    setVisualizacaoAgenda(visualizacao);
+    void salvarVisualizacaoAgenda(visualizacao).catch(() => undefined);
+  }
   const feedbackDismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const dismissFeedback = () => {
@@ -562,6 +614,79 @@ export default function SettingsScreen() {
               </View>
             </View>
           </View>
+          {activeRole === "provider" && (
+            <View style={[styles.card, !wide && styles.cardMobile]}>
+              <View style={styles.sectionHeader}>
+                <View style={styles.sectionIcon}>
+                  <AppIcon name="settings" size={20} color={colors.brand} />
+                </View>
+                <View style={styles.sectionHeaderCopy}>
+                  <Text style={styles.sectionTitle}>Preferências do app</Text>
+                  <Text style={styles.sectionText}>
+                    Salvas automaticamente neste aparelho.
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.form}>
+                <View style={styles.field}>
+                  <Text style={styles.label}>Antecedência do lembrete</Text>
+                  <View style={styles.professionOptions}>
+                    {opcoesAntecedenciaLembrete.map((minutos) => {
+                      const ativo = antecedenciaLembrete === minutos;
+                      return (
+                        <Pressable
+                          key={minutos}
+                          onPress={() => escolherAntecedencia(minutos)}
+                          accessibilityRole="radio"
+                          accessibilityState={{ selected: ativo }}
+                          style={[styles.professionOption, ativo && styles.professionOptionActive]}
+                        >
+                          <Text
+                            style={[
+                              styles.professionOptionText,
+                              ativo && styles.professionOptionTextActive,
+                            ]}
+                          >
+                            {ROTULOS_ANTECEDENCIA[minutos]}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                  <Text style={styles.hint}>
+                    Quanto tempo antes do atendimento o lembrete aparece no celular.
+                  </Text>
+                </View>
+                <View style={styles.field}>
+                  <Text style={styles.label}>Visualização padrão da agenda</Text>
+                  <View style={styles.professionOptions}>
+                    {OPCOES_VISUALIZACAO.map((opcao) => {
+                      const ativo = visualizacaoAgenda === opcao.value;
+                      return (
+                        <Pressable
+                          key={opcao.value}
+                          onPress={() => escolherVisualizacao(opcao.value)}
+                          accessibilityRole="radio"
+                          accessibilityState={{ selected: ativo }}
+                          style={[styles.professionOption, ativo && styles.professionOptionActive]}
+                        >
+                          <Text
+                            style={[
+                              styles.professionOptionText,
+                              ativo && styles.professionOptionTextActive,
+                            ]}
+                          >
+                            {opcao.label}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                  <Text style={styles.hint}>Como a agenda abre ao entrar na tela.</Text>
+                </View>
+              </View>
+            </View>
+          )}
           {error ? (
             <View style={styles.error}>
               <AppIcon name="warning" size={20} color={colors.danger} />

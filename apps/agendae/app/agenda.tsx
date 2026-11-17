@@ -37,10 +37,13 @@ import { zonedDateTimeToUtcIso } from "@/src/domain/agenda/timezone";
 import type { AppointmentRecord, AvailabilityBlock } from "@/src/domain/agenda/types";
 import type { Client as DomainClient } from "@/src/domain/clients/types";
 import type { Service as DomainService } from "@/src/domain/services/types";
+import { carregarAgendaComCopia } from "@/src/infra/agenda/agenda-offline";
 import { appointmentService } from "@/src/infra/agenda/supabase-appointment-adapter";
+import { scheduleAppointmentReminders } from "@/src/infra/notifications/local-reminders";
 import { clientPortfolioService } from "@/src/infra/clients/supabase-client-portfolio-adapter";
 import { providerSettingsService } from "@/src/infra/provider/supabase-provider-settings-adapter";
 import { serviceCatalogService } from "@/src/infra/services/supabase-service-catalog-adapter";
+import { lerVisualizacaoAgenda } from "@/src/infra/storage/preferences";
 import {
   useProviderAppointmentHorizon,
 } from "@/src/hooks/use-provider-plan";
@@ -228,6 +231,16 @@ export default function AgendaScreen() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<"Todos" | AppointmentStatus>("Todos");
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
+  // Preferência salva no aparelho (card #7): só define como a agenda abre.
+  useEffect(() => {
+    let active = true;
+    void lerVisualizacaoAgenda().then((salva) => {
+      if (active) setViewMode(salva);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
   const [metricCarouselIndex, setMetricCarouselIndex] = useState(0);
   const [monthPickerVisible, setMonthPickerVisible] = useState(false);
   const [pickerYear, setPickerYear] = useState(() =>
@@ -278,6 +291,7 @@ export default function AgendaScreen() {
   const [clientMessage, setClientMessage] = useState("");
   const [internalNotes, setInternalNotes] = useState("");
   const [error, setError] = useState("");
+  const [avisoOffline, setAvisoOffline] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<{
     title?: string;
     service?: string;
@@ -414,23 +428,33 @@ export default function AgendaScreen() {
     }
     setAgendaLoading(true);
     try {
-      const [firstPage, blocks] = await Promise.all([
-        appointmentService.listAppointments({ month, page: 1, pageSize: 10 }),
-        appointmentService.listAvailabilityBlocks(month),
-      ]);
-      const remainingPages = await Promise.all(
-        Array.from({ length: Math.max(0, firstPage.totalPages - 1) }, (_, index) =>
-          appointmentService.listAppointments({ month, page: index + 2, pageSize: 10 }),
-        ),
-      );
-      const pages = [firstPage, ...remainingPages];
-      const names = new Map(clientOptions.map((item) => [item.id, item.name]));
-      setAppointments(pages.flatMap((pageResult) => pageResult.items).map((item) => toUiAppointment(item, names)));
-      setBlockedPeriods(blocks.map((block: AvailabilityBlock) => {
-        const start = zonedParts(block.startsAt, block.timezone);
-        const end = zonedParts(block.endsAt, block.timezone);
-        return { id: block.id, startDate: start.date, startTime: start.time, endDate: end.date, endTime: end.time, reason: block.reason ?? "Período indisponível" };
-      }));
+      // issue #10: sem internet, a agenda mostra a cópia salva no aparelho.
+      const agenda = await carregarAgendaComCopia(month, async () => {
+        const [firstPage, blocks] = await Promise.all([
+          appointmentService.listAppointments({ month, page: 1, pageSize: 10 }),
+          appointmentService.listAvailabilityBlocks(month),
+        ]);
+        const remainingPages = await Promise.all(
+          Array.from({ length: Math.max(0, firstPage.totalPages - 1) }, (_, index) =>
+            appointmentService.listAppointments({ month, page: index + 2, pageSize: 10 }),
+          ),
+        );
+        const pages = [firstPage, ...remainingPages];
+        const names = new Map(clientOptions.map((item) => [item.id, item.name]));
+        const records = pages.flatMap((pageResult) => pageResult.items);
+
+void scheduleAppointmentReminders(records).catch((notificationError) => {
+  console.warn("Não foi possível agendar os lembretes locais:", notificationError);
+});
+        setBlockedPeriods(blocks.map((block: AvailabilityBlock) => {
+          const start = zonedParts(block.startsAt, block.timezone);
+          const end = zonedParts(block.endsAt, block.timezone);
+          return { id: block.id, startDate: start.date, startTime: start.time, endDate: end.date, endTime: end.time, reason: block.reason ?? "Período indisponível" };
+        }));
+        return records.map((item) => toUiAppointment(item, names));
+      });
+      setAppointments(agenda.atendimentos);
+      setAvisoOffline(agenda.avisoOffline);
     } finally {
       setAgendaLoading(false);
       setInitialAgendaLoading(false);
@@ -1104,6 +1128,12 @@ export default function AgendaScreen() {
           )}
 
           <View style={styles.directory}>
+            {avisoOffline ? (
+              <View style={styles.offlineNotice}>
+                <AppIcon name="warning" size={16} color={colors.warning} />
+                <Text style={styles.offlineNoticeText}>{avisoOffline}</Text>
+              </View>
+            ) : null}
             <View style={[styles.toolbar, !wide && styles.toolbarMobile]}>
               <View style={styles.search}>
                 <AppIcon name="search" size={20} color={colors.mutedSoft} />
@@ -4197,6 +4227,22 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     borderRadius: radius.sm,
     backgroundColor: colors.dangerSoft,
+  },
+  offlineNotice: {
+    marginBottom: spacing.md,
+    padding: spacing.md,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    borderRadius: radius.sm,
+    backgroundColor: colors.warningSoft,
+  },
+  offlineNoticeText: {
+    flex: 1,
+    color: colors.ink,
+    fontFamily: typography.family.semibold,
+    fontSize: typography.size.body,
+    lineHeight: typography.lineHeight.body,
   },
   errorText: {
     flex: 1,

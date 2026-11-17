@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Platform } from "react-native";
 
+import { ler, salvar } from "@/src/infra/storage/async-storage";
+
 export type ProviderPlan = "free" | "premium";
 export type ProviderPlanState = {
   plan: ProviderPlan;
@@ -45,26 +47,32 @@ export function useProviderPlanState() {
   const [planState, setPlanState] = useState<ProviderPlanState>(defaultPlanState);
 
   useEffect(() => {
-    function sync() {
-      if (Platform.OS !== "web" || typeof localStorage === "undefined") return;
+    let active = true;
+
+    async function sync() {
+      // O plano só é guardado pela tela de planos na web (app/plans.tsx).
+      // Mantemos a mesma regra de antes para o app se comportar igual.
+      if (Platform.OS !== "web") return;
       try {
-        const stored = localStorage.getItem(providerPlanStorageKey);
+        const stored = await ler(providerPlanStorageKey);
+        if (!active) return;
         const parsed = stored
           ? ({ ...defaultPlanState, ...JSON.parse(stored) } as ProviderPlanState)
           : defaultPlanState;
         const next = resolveExpiredTrial(parsed);
         setPlanState(next);
-        if (next !== parsed)
-          localStorage.setItem(providerPlanStorageKey, JSON.stringify(next));
+        if (next !== parsed) await salvar(providerPlanStorageKey, JSON.stringify(next));
       } catch {
-        setPlanState(defaultPlanState);
+        if (active) setPlanState(defaultPlanState);
       }
     }
-    sync();
-    if (Platform.OS === "web") window.addEventListener(providerPlanUpdatedEvent, sync);
-    const timer = setInterval(sync, 60_000);
+    const runSync = () => void sync();
+    runSync();
+    if (Platform.OS === "web") window.addEventListener(providerPlanUpdatedEvent, runSync);
+    const timer = setInterval(runSync, 60_000);
     return () => {
-      if (Platform.OS === "web") window.removeEventListener(providerPlanUpdatedEvent, sync);
+      active = false;
+      if (Platform.OS === "web") window.removeEventListener(providerPlanUpdatedEvent, runSync);
       clearInterval(timer);
     };
   }, []);

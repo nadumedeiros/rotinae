@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
-import * as SecureStore from "expo-secure-store";
 import { AppState, Platform } from "react-native";
+import { armazenamentoSeguroSupabase } from "@/src/infra/storage/secure-storage";
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
@@ -11,11 +11,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   );
 }
 
-const secureStoreAdapter = {
-  getItem: (key: string) => SecureStore.getItemAsync(key),
-  setItem: (key: string, value: string) => SecureStore.setItemAsync(key, value),
-  removeItem: (key: string) => SecureStore.deleteItemAsync(key),
-};
+
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -26,8 +22,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     // confirmação de e-mail na Web.
     flowType: "pkce",
     // Web usa o localStorage padrão do SDK; nativo usa o Keychain/Keystore via SecureStore.
-    storage: Platform.OS === "web" ? undefined : secureStoreAdapter,
-    autoRefreshToken: true,
+    storage: Platform.OS === "web" ? undefined : armazenamentoSeguroSupabase,    autoRefreshToken: true,
     persistSession: true,
     // Callbacks são consumidos explicitamente pelas rotas de auth em Web e
     // nativo. Isso impede uma sessão antiga de mascarar um novo código PKCE.
