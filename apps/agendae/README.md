@@ -1,50 +1,90 @@
-# Welcome to your Expo app 👋
+# Rotinaê
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Sua rotina de atendimentos em um só lugar.**
 
-## Get started
+O Rotinaê é um aplicativo em React Native (Expo) para prestadores de serviço, como adestradores de cães, organizarem a rotina: agenda, clientes, serviços e pagamentos em um só app. Ele funciona no Android, no iPhone e no navegador.
 
-1. Install dependencies
+## Trabalho final: Desenvolvimento Mobile
+
+- **Professor:** Filipe Lopes
+- **Integrantes:** Ana Eduarda, Anette Stefany, Clarice Christine e Joelma Giovanna
+
+O app base foi criado anteriormente para outros projetos e, com autorização do professor, foi usado como ponto de partida. O trabalho do grupo foi desenvolver os conteúdos da disciplina que ainda faltavam, organizando tudo em Git Flow.
+
+### O que o grupo desenvolveu
+
+| Funcionalidade | Conteúdo da aula | Issue | Responsável |
+| --- | --- | --- | --- |
+| Configuração do Git Flow, da CI e das dependências | Versionamento | #1 | Ana Eduarda |
+| Módulo único do SecureStore (token de login) | Persistência de dados | #3 | Ana Eduarda |
+| Saída segura da conta (logout que limpa o aparelho) | Persistência e ciclo de vida | #4 | Ana Eduarda |
+| Helper do AsyncStorage e migração do armazenamento simples | Persistência de dados | #6 | Anette |
+| Seção "Preferências do app" | Persistência de dados | #7 | Anette |
+| Banco SQLite para os atendimentos | Persistência de dados | #9 | Clarice |
+| Agenda offline (mostra a agenda salva sem internet) | Persistência e web services | #10 | Clarice |
+| Lembrete local antes de cada atendimento | Notificações | #11 | Joelma |
+| Cancelar e reagendar o lembrete, botões "Adiar" e "Ok" | Notificações | #12 | Joelma |
+
+### Onde cada conteúdo do bimestre aparece
+
+| Conteúdo | No Rotinaê |
+| --- | --- |
+| Componentes e props | Botões e campos reutilizados em várias telas |
+| Navegação | Pilha (clientes → detalhes), abas (barra inferior) e modais |
+| Formulários | Teclado certo em cada campo, senha escondida, teclado não cobre o campo |
+| Ciclo de vida | Telas buscam dados ao abrir e ao voltar; o app renova o login ao voltar do segundo plano e desloga por inatividade |
+| Web services | Supabase (dados e login) e Mercado Pago (assinatura), com carregamento e tratamento de erro |
+| Notificações | Interna (janelas de confirmação), central no app (sininho), remota (push) e local (lembrete) |
+| AsyncStorage | Preferências do app |
+| SecureStore | Token de login |
+| SQLite | Agenda offline |
+| Git e Git Flow | Issues, branches, Pull Requests com revisão e testes automáticos |
+
+## Tecnologias
+
+- Expo SDK 54, React Native 0.81 e TypeScript
+- Expo Router (navegação)
+- Supabase (banco de dados e autenticação)
+- expo-notifications, AsyncStorage, expo-secure-store e expo-sqlite
+- Jest (testes) e GitHub Actions (CI)
+
+## Como rodar
+
+1. Dentro de `apps/agendae`, crie o arquivo `.env.local` a partir do `.env.example`, com a URL e a chave **anon/public** do Supabase. Esse arquivo nunca vai para o GitHub.
+2. Instale as dependências:
 
    ```bash
-   npm install
+   cd apps/agendae
+   npm ci
    ```
 
-2. Start the app
+3. Rode o app:
 
    ```bash
-   npx expo start
+   npx expo start --tunnel
    ```
 
-In the output, you'll find options to open the app in a
+4. Escaneie o QR code com o **Expo Go na versão do SDK 54**.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Observações:
+- No Expo Go, a notificação push e o login com Google não funcionam; para isso, use o APK.
+- Para ver no navegador: `npx expo start --web`.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Testes e verificações
 
 ```bash
-npm run reset-project
+npm run lint
+npm run typecheck
+npm test
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+A CI do GitHub roda essas verificações em todo Pull Request para `develop` e `main`.
 
-## Learn more
+## Como trabalhamos (Git Flow)
 
-To learn more about developing your project with Expo, look at the following resources:
+- **main:** versão entregue, marcada com tag (ex.: `v1.1.0`)
+- **develop:** onde o trabalho de todas se junta
+- **feature/número-da-tarefa:** uma branch por Issue, criada a partir da `develop`
+- **release/1.1.0:** preparação da versão de entrega
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Fluxo de cada tarefa: Issue → branch → commits → Pull Request para a `develop` → revisão de outra integrante → testes automáticos → merge.
