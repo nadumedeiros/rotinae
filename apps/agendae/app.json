@@ -2,7 +2,7 @@
   "expo": {
     "name": "Rotinaê",
     "slug": "rotinae",
-    "version": "1.0.5",
+    "version": "1.1.0",
     "icon": "./assets/images/app-icon-e.png",
     "scheme": "rotinae",
     "userInterfaceStyle": "automatic",
@@ -21,7 +21,7 @@
       "predictiveBackGestureEnabled": false,
       "package": "br.com.rotinae.app",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 9
+      "versionCode": 10
     },
     "web": {
       "output": "static",
