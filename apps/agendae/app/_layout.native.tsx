@@ -13,6 +13,7 @@ import { DesktopTooltips } from "@/src/components/ui/desktop-tooltips";
 import { AppUpdateChecker } from "@/src/components/app-update-checker";
 import { PushNotificationManager } from "@/src/components/push-notification-manager";
 import { InactivityLogoutGuard } from "@/src/components/inactivity-logout-guard";
+import { LocalReminderActions } from "@/src/components/local-reminder-actions";
 import { RouteAccessGuard } from "@/src/components/route-access-guard";
 
 SplashScreen.preventAutoHideAsync();
@@ -32,6 +33,7 @@ export default function NativeRootLayout() {
     <InactivityLogoutGuard>
       <AppUpdateChecker />
       <PushNotificationManager />
+      <LocalReminderActions />
       <DesktopTooltips />
       <RouteAccessGuard>
         <Stack screenOptions={{ headerShown: false }}>
