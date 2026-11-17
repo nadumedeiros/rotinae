@@ -42,6 +42,7 @@ import { scheduleAppointmentReminders } from "@/src/infra/notifications/local-re
 import { clientPortfolioService } from "@/src/infra/clients/supabase-client-portfolio-adapter";
 import { providerSettingsService } from "@/src/infra/provider/supabase-provider-settings-adapter";
 import { serviceCatalogService } from "@/src/infra/services/supabase-service-catalog-adapter";
+import { lerVisualizacaoAgenda } from "@/src/infra/storage/preferences";
 import {
   useProviderAppointmentHorizon,
 } from "@/src/hooks/use-provider-plan";
@@ -229,6 +230,16 @@ export default function AgendaScreen() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<"Todos" | AppointmentStatus>("Todos");
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
+  // Preferência salva no aparelho (card #7): só define como a agenda abre.
+  useEffect(() => {
+    let active = true;
+    void lerVisualizacaoAgenda().then((salva) => {
+      if (active) setViewMode(salva);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
   const [metricCarouselIndex, setMetricCarouselIndex] = useState(0);
   const [monthPickerVisible, setMonthPickerVisible] = useState(false);
   const [pickerYear, setPickerYear] = useState(() =>
